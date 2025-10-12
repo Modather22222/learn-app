@@ -7,6 +7,7 @@ environment:
   sdk: ^3.9.2
 
 dependencies:
+  appwrite: ^20.2.1
   flutter:
     sdk: flutter
   font_awesome_flutter: ^10.10.0

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:learn_app/appwrite_service.dart';
+import 'package:learn_app/home_screen.dart';
 import 'package:learn_app/login_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    AppwriteProvider(appwriteService: AppwriteService(), child: const MyApp()),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -16,7 +20,20 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const LoginScreen(),
+      home: FutureBuilder(
+        future: AppwriteProvider.of(context).checkSession(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          if (snapshot.hasData && snapshot.data!) {
+            return const HomeScreen();
+          }
+          return const LoginScreen();
+        },
+      ),
     );
   }
 }
