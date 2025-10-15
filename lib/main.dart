@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:learn_app/appwrite_service.dart';
-import 'package:learn_app/home_screen.dart';
-import 'package:learn_app/login_screen.dart';
+import 'package:learn_app/splash_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Appwrite service after Flutter bindings are ready.
+  final appwriteService = AppwriteService();
+
   runApp(
-    AppwriteProvider(appwriteService: AppwriteService(), child: const MyApp()),
+    AppwriteProvider(appwriteService: appwriteService, child: const MyApp()),
   );
 }
 
@@ -20,20 +24,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: FutureBuilder(
-        future: AppwriteProvider.of(context).checkSession(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          }
-          if (snapshot.hasData && snapshot.data!) {
-            return const HomeScreen();
-          }
-          return const LoginScreen();
-        },
-      ),
+      home: const SplashScreen(),
     );
   }
 }
